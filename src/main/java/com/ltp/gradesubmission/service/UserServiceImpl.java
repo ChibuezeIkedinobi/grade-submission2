@@ -2,6 +2,10 @@ package com.ltp.gradesubmission.service;
 
 import java.util.Optional;
 
+import com.ltp.gradesubmission.security.SecurityConstants;
+import com.ltp.gradesubmission.security.filter.JWTAuthorizationFilter;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +14,9 @@ import com.ltp.gradesubmission.exception.EntityNotFoundException;
 import com.ltp.gradesubmission.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
+
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -24,7 +31,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUser(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return unwrapUser(user, 404L);
+    }
+
+    @Override
     public User saveUser(User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));  // receive the deserialized password and encodes it before storing it in the database
         return userRepository.save(user);
     }
 
@@ -32,5 +46,5 @@ public class UserServiceImpl implements UserService {
         if (entity.isPresent()) return entity.get();
         else throw new EntityNotFoundException(id, User.class);
     }
-    
+
 }
