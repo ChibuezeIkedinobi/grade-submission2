@@ -2,10 +2,7 @@ package com.ltp.gradesubmission.service;
 
 import java.util.Optional;
 
-import com.ltp.gradesubmission.security.SecurityConstants;
-import com.ltp.gradesubmission.security.filter.JWTAuthorizationFilter;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +11,14 @@ import com.ltp.gradesubmission.exception.EntityNotFoundException;
 import com.ltp.gradesubmission.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public User getUser(Long id) {
@@ -38,13 +34,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveUser(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));  // receive the deserialized password and encodes it before storing it in the database
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     static User unwrapUser(Optional<User> entity, Long id) {
         if (entity.isPresent()) return entity.get();
         else throw new EntityNotFoundException(id, User.class);
+    }
+
+
+    @Transactional
+    @Override
+    public HttpStatus deleteUserByUsername(String username) {
+        userRepository.deleteByUsername(username);   // ##########################
+        return HttpStatus.OK;
     }
 
 }

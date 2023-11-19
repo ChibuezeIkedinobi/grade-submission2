@@ -3,12 +3,14 @@ package com.ltp.gradesubmission.security.filter;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.ltp.gradesubmission.exception.EntityNotFoundException;
 import io.jsonwebtoken.JwtException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
