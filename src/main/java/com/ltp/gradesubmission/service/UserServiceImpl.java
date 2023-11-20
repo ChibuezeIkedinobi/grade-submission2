@@ -44,11 +44,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Transactional
     @Override
-    public HttpStatus deleteUserByUsername(String username) {
-        userRepository.deleteByUsername(username);   // ##########################
-        return HttpStatus.OK;
+    public void deleteUserByUsername(String username) {
+        Long userId = userRepository.findUserIdByUsername(username);
+        userRepository.deleteUserById(userId);
     }
 
 }

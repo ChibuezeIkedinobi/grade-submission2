@@ -30,7 +30,7 @@ public class UserController {
 		String username = authentication.getName();
 		userService.deleteUserByUsername(username);
 
-		return "User with ID " + username + " deleted successfully.";
+		return "User with Username " + username + " has been deleted successfully.";
 	}
 
 	@PostMapping("/register")
